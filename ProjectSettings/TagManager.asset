@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - FxTemporaire
+  - target
+  - DayAndNight
+  - weapon
+  - enemy
+  - Jjab
+  - Tower
+  - ThePlayer
   layers:
   - Default
   - TransparentFX
