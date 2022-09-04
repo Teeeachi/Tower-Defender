@@ -12,6 +12,7 @@ TagManager:
   - Jjab
   - Tower
   - ThePlayer
+  - Enemy
   layers:
   - Default
   - TransparentFX

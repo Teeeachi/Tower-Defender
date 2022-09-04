@@ -7,14 +7,19 @@ public class TowerWeapon : MonoBehaviour
 {
     public Transform target;
     private float distance;
-    public string enemyTag = "target";
+    public string enemyTag;
     public float fr = 10;
     bool destroy = false;
+    private bool towerDidHitEnemy;
+    private float hitStrength;
 
     // Start is called before the first frame update
     void Start()
     {
-        distance = 40f;
+        towerDidHitEnemy = false;
+        enemyTag = "Enemy";
+        hitStrength = 10f;
+        distance = 100f;
         InvokeRepeating("UpdateTarget", 0f, 0.5f);
     }
 
@@ -30,22 +35,28 @@ public class TowerWeapon : MonoBehaviour
             {
                 shortestDistance = distanceToEnemy;
                 nearestEnemy = enemy;
-
             }
         }
+
         if(nearestEnemy != null && shortestDistance <= distance)
         {
             target = nearestEnemy.transform;
         }
 
-        if (Vector3.Distance(transform.position, target.position) <= distance)
+        if (nearestEnemy != null && shortestDistance <= distance && towerDidHitEnemy == false)
         {
-
-
-                Destroy(nearestEnemy,1f);
-
+            target = nearestEnemy.transform;
+            towerDidHitEnemy = true;
+            StartCoroutine(shootTheEnemy(target.gameObject));
         }
+    }
 
+    private IEnumerator shootTheEnemy(GameObject hitEnemy)
+    {
+        Debug.Log("hit");
+        hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
+        yield return new WaitForSeconds(2f);
+        towerDidHitEnemy = false;
     }
 
     // Update is called once per frame
@@ -55,13 +66,8 @@ public class TowerWeapon : MonoBehaviour
             return;
         if (Vector3.Distance(transform.position, target.position) <= distance)
         {
-            Debug.Log("jbfhbdzxh");
-            //transform.LookAt(target.position);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.position - transform.position), Time.deltaTime * 100);
-            
         }
-
-
     }
     
 }

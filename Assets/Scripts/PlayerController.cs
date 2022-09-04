@@ -30,6 +30,12 @@ public class PlayerController : MonoBehaviour
     private float rotationSpeed;
 
     public Button cameraButton;
+    private Transform target;
+    private float distance;
+    public string enemyTag;
+    private bool playerDidHitEnemy;
+
+    private float hitStrength;
 
     public void onCameraButtonClick()
     {
@@ -68,6 +74,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        hitStrength = 20f;
+        distance = 10f;
+        playerDidHitEnemy = false;
+        enemyTag = "Enemy";
         cameraXTilt = 0.3f;
         rotationSpeed = 10f;
         moveSpeed = 10f;
@@ -88,6 +98,36 @@ public class PlayerController : MonoBehaviour
             c.a -= Time.deltaTime;
             RedScreenImage.color = c;
         }
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+        float shortestDistance = Mathf.Infinity;
+        GameObject nearestEnemy = null;
+        foreach (GameObject enemy in enemies)
+        {
+            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+            if (distanceToEnemy < shortestDistance)
+            {
+                shortestDistance = distanceToEnemy;
+                nearestEnemy = enemy;
+            }
+        }
+
+        if (nearestEnemy != null && shortestDistance <= distance && playerDidHitEnemy == false)
+        {
+            target = nearestEnemy.transform;
+            playerDidHitEnemy = true;
+            StartCoroutine(hitAnEnemy(target.gameObject));
+        }
+    }
+
+    private IEnumerator hitAnEnemy(GameObject hitEnemy)
+    {
+        DoTheAttack();
+        playerDidHitEnemy = true;
+        hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
+        yield return new WaitForSeconds(2f);
+        playerDidHitEnemy = false;
+        //Navmesh NavMeshScript = hitEnemy.GetComponent<Navmesh>();
+        //NavMeshScript.GotHit();
     }
 
     private void Move()

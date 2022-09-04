@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Navmesh : MonoBehaviour
 {
@@ -11,9 +12,16 @@ public class Navmesh : MonoBehaviour
     public double Rad=6f;
     private Transform target;
     NavMeshAgent agent;
+
+    public Slider sliderHP;
+    private float maxHealth;
+    private float currentHealth;
+
     // Start is called before the first frame update
     void Start()
     {
+        maxHealth = 100f;
+        currentHealth = 100f;
         player = GameObject.FindWithTag("ThePlayer").transform;
         target = GameObject.FindWithTag("Tower").transform;
         agent = GetComponent<NavMeshAgent>();
@@ -45,6 +53,16 @@ public class Navmesh : MonoBehaviour
             transform.LookAt(player.transform.position);
             gameObject.GetComponent<Animator>().SetTrigger("Idle");
             gameObject.GetComponent<Animator>().SetTrigger("jab");          
+        }
+    }
+    public void GotHit(float damage)
+    {
+        currentHealth -= damage;
+        sliderHP.value = currentHealth / maxHealth;
+        //Debug.Log(damage);
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
