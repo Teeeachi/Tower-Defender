@@ -8,8 +8,6 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public HealthBarController HealthBarSlider;
-
     [SerializeField] private Rigidbody RB;
     [SerializeField] private FixedJoystick joystick;
     [SerializeField] private float cameraXTilt;
@@ -39,7 +37,6 @@ public class PlayerController : MonoBehaviour
 
     public void onCameraButtonClick()
     {
-        HealthBarSlider.gotHit(5f);
         Color RedC = RedScreenImage.color;
         RedC.a = 0.8f;
         RedScreenImage.color = RedC;

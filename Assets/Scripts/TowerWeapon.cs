@@ -53,7 +53,6 @@ public class TowerWeapon : MonoBehaviour
 
     private IEnumerator shootTheEnemy(GameObject hitEnemy)
     {
-        Debug.Log("hit");
         hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
         yield return new WaitForSeconds(2f);
         towerDidHitEnemy = false;

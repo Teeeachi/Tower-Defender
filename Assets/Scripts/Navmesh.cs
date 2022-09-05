@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class Navmesh : MonoBehaviour
 {
+    public HealthBarController TowerHealthBarSlider;
+    public HealthBarController PlayerHealthBarSlider;
     public double dist;
     public double dist1;
     private Transform player;
-    public double Rad=6f;
+    public double Rad;
     private Transform target;
     NavMeshAgent agent;
 
@@ -17,9 +19,15 @@ public class Navmesh : MonoBehaviour
     private float maxHealth;
     private float currentHealth;
 
+    private bool didHit;
+
     // Start is called before the first frame update
     void Start()
     {
+        didHit = false;
+        TowerHealthBarSlider = GameObject.Find("TowerSlider").GetComponent<HealthBarController>();
+        PlayerHealthBarSlider = GameObject.Find("PlayerSlider").GetComponent<HealthBarController>();
+        Rad = 12f;
         maxHealth = 100f;
         currentHealth = 100f;
         player = GameObject.FindWithTag("ThePlayer").transform;
@@ -32,34 +40,58 @@ public class Navmesh : MonoBehaviour
     {
         dist1 = Vector3.Distance(target.transform.position, transform.position);
         dist = Vector3.Distance(player.transform.position, transform.position);
-        if ((dist > Rad)&&(dist1>1.5f))
+        if ((dist > Rad)&&(dist1>3f))
         {
             agent.destination = target.position;
             gameObject.GetComponent<Animator>().SetTrigger("Run");
         }
-        if ((dist < Rad)&&(dist>1.5f))
+        if ((dist < Rad)&&(dist>3f))
         {
             agent.destination = player.position;
             gameObject.GetComponent<Animator>().SetTrigger("Run");
         }
-        if ((dist > Rad) && (dist1 < 1.5f))
+        if ((dist > Rad) && (dist1 <= 3f) && didHit == false)
         {
-            transform.LookAt(target.transform.position);
             gameObject.GetComponent<Animator>().SetTrigger("Idle");
-            gameObject.GetComponent<Animator>().SetTrigger("jab");
+            if (didHit == false)
+            {
+                gameObject.GetComponent<Animator>().SetTrigger("jab");
+                StartCoroutine(AttackTheTower(5f));
+                didHit = true;
+            }
+            //transform.LookAt(target.transform.position);
         }
-        if (dist <= 3f)
+        if ((dist <= 6f) && didHit == false)
         {
-            transform.LookAt(player.transform.position);
             gameObject.GetComponent<Animator>().SetTrigger("Idle");
-            gameObject.GetComponent<Animator>().SetTrigger("jab");          
+            if(didHit == false)
+            {
+                gameObject.GetComponent<Animator>().SetTrigger("jab");
+                StartCoroutine(AttackThePlayer(5f));
+                didHit = true;
+            }
+            //transform.LookAt(player.transform.position);         
         }
     }
+
+    private IEnumerator AttackTheTower(float damage)
+    {
+        TowerHealthBarSlider.gotHit(damage);
+        yield return new WaitForSeconds(3f);
+        didHit = false;
+    }
+
+    private IEnumerator AttackThePlayer(float damage)
+    {
+        PlayerHealthBarSlider.gotHit(damage);
+        yield return new WaitForSeconds(3f);
+        didHit = false;
+    }
+
     public void GotHit(float damage)
     {
         currentHealth -= damage;
         sliderHP.value = currentHealth / maxHealth;
-        //Debug.Log(damage);
         if(currentHealth <= 0)
         {
             Destroy(gameObject);
