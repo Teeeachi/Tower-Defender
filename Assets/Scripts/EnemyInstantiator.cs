@@ -15,7 +15,7 @@ public class EnemyInstantiator : MonoBehaviour
     {
         while (true)
         {
-            Instantiate(enemy, new Vector3(80, 0, 80), Quaternion.identity);
+            Instantiate(enemy, new Vector3(63, 0, 11), Quaternion.identity);
             yield return new WaitForSeconds(5f);
         }
     }

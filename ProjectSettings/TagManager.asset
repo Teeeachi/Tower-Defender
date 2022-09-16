@@ -13,6 +13,7 @@ TagManager:
   - Tower
   - ThePlayer
   - Enemy
+  - towerplace
   layers:
   - Default
   - TransparentFX

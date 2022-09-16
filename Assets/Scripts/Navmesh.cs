@@ -21,9 +21,11 @@ public class Navmesh : MonoBehaviour
 
     private bool didHit;
 
+    bool frozen = false;
     // Start is called before the first frame update
     void Start()
     {
+        frozen = false;
         didHit = false;
         TowerHealthBarSlider = GameObject.Find("TowerSlider").GetComponent<HealthBarController>();
         PlayerHealthBarSlider = GameObject.Find("PlayerSlider").GetComponent<HealthBarController>();
@@ -96,5 +98,15 @@ public class Navmesh : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    public void FreezeMe()
+    {
+        if (!frozen)
+        {
+            frozen = true;
+            GetComponent<NavMeshAgent>().speed /= 2;
+
+        }
+
     }
 }
