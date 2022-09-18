@@ -13,12 +13,13 @@ public class FreezeWeapon : MonoBehaviour
     bool destroy = false;
     private bool towerDidHitEnemy;
     private float hitStrength;
-
+    public float price;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        price = 75f;
         towerDidHitEnemy = false;
         enemyTag = "Enemy";
         hitStrength = 10f;

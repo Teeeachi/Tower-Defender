@@ -131,7 +131,6 @@ public class PlayerController : MonoBehaviour
     {
         isOnTheGround = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
         movement = new Vector3(joystick.Horizontal * moveSpeed * Time.deltaTime, 0, joystick.Vertical * moveSpeed * Time.deltaTime);
-        Debug.Log(movement);
         if (joystick.Horizontal != 0 || joystick.Vertical != 0)
         {
             //Debug.Log("H " + joystick.Horizontal);
