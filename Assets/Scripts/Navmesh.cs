@@ -8,6 +8,7 @@ public class Navmesh : MonoBehaviour
 {
     public HealthBarController TowerHealthBarSlider;
     public HealthBarController PlayerHealthBarSlider;
+    public PlayerController thePlayer;
     public double dist;
     public double dist1;
     private Transform player;
@@ -22,11 +23,17 @@ public class Navmesh : MonoBehaviour
     private bool didHit;
 
     bool frozen = false;
+
+    public CoinManager coins;
+    public float coinAmount;
     // Start is called before the first frame update
     void Start()
     {
+        coinAmount = 25f;
+        coins = GameObject.Find("CoinText").GetComponent<CoinManager>();
         frozen = false;
         didHit = false;
+        thePlayer = GameObject.Find("Player").GetComponent<PlayerController>();
         TowerHealthBarSlider = GameObject.Find("TowerSlider").GetComponent<HealthBarController>();
         PlayerHealthBarSlider = GameObject.Find("PlayerSlider").GetComponent<HealthBarController>();
         Rad = 12f;
@@ -86,6 +93,7 @@ public class Navmesh : MonoBehaviour
     private IEnumerator AttackThePlayer(float damage)
     {
         PlayerHealthBarSlider.gotHit(damage);
+        thePlayer.GotHitByAnEnemy();
         yield return new WaitForSeconds(3f);
         didHit = false;
     }
@@ -97,6 +105,7 @@ public class Navmesh : MonoBehaviour
         if(currentHealth <= 0)
         {
             Destroy(gameObject);
+            coins.addAmount(coinAmount);
         }
     }
     public void FreezeMe()
@@ -105,7 +114,6 @@ public class Navmesh : MonoBehaviour
         {
             frozen = true;
             GetComponent<NavMeshAgent>().speed /= 2;
-
         }
 
     }

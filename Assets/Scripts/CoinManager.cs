@@ -27,9 +27,15 @@ public class CoinManager : MonoBehaviour
         coinText.text = "Coins: " + coinCount;
     }
 
+    public void addAmount(float amount)
+    {
+        coinCount += amount;
+        coinText.text = "Coins: " + coinCount;
+    }
+
     void Start()
     {
-        coinCount = 100f;
+        coinCount = 1000f;
         coinText.text = "Coins: " + coinCount;
     }
 

@@ -35,13 +35,15 @@ public class PlayerController : MonoBehaviour
 
     private float hitStrength;
 
-    public void onCameraButtonClick()
+    public void GotHitByAnEnemy()
     {
         Color RedC = RedScreenImage.color;
         RedC.a = 0.8f;
         RedScreenImage.color = RedC;
-        
+    }
 
+    public void onCameraButtonClick()
+    {
         StartCoroutine("FadeOutCR");
     }
 

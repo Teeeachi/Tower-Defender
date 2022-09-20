@@ -130,4 +130,4 @@ MonoBehaviour:
   target: {fileID: 0}
   enemyTag: target
   fr: 10
-  price: 0
+  price: 75

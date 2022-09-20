@@ -14,9 +14,15 @@ public class TowerWeapon : MonoBehaviour
     private float hitStrength;
     public float price;
 
+    //Upgrades
+    public int level;
+    private float secondsForShooting;
+
     // Start is called before the first frame update
     void Start()
     {
+        secondsForShooting = 2f;
+        level = 1;
         price = 50f;
         towerDidHitEnemy = false;
         enemyTag = "Enemy";
@@ -53,10 +59,17 @@ public class TowerWeapon : MonoBehaviour
         }
     }
 
+    public void upgradeTower()
+    {
+        level++;
+        hitStrength += 5f;
+        secondsForShooting -= 0.25f;
+    }
+
     private IEnumerator shootTheEnemy(GameObject hitEnemy)
     {
         hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(secondsForShooting);
         towerDidHitEnemy = false;
     }
 

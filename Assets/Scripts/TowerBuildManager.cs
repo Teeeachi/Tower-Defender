@@ -9,24 +9,33 @@ public class TowerBuildManager : MonoBehaviour
     public Transform playerTarget;
     public float distance;
     public Button buildButton;
-    public GameObject towersOwnWeapon;
     public CoinManager coins;
     public float price;
     public GameObject towerToBuild;
-
     public bool isNearATower;
-
+    public bool hasTower;
     public Sprite updateImage;
     public Sprite buildImage;
 
+    private GameObject ownTower;
+
     void Start()
     {
-        price = 50f;
+        ownTower = null;
+        hasTower = false;
+        if(towerToBuild.GetComponent<TowerWeapon>() == null)
+        {
+            price = towerToBuild.GetComponent<FreezeWeapon>().price;
+        }
+        else
+        {
+            price = towerToBuild.GetComponent<TowerWeapon>().price;
+        }
+        
         buildButton = GameObject.FindGameObjectWithTag("BuildButton").GetComponent<Button>();
         coins = GameObject.Find("CoinText").GetComponent<CoinManager>();
         playerTarget = GameObject.FindGameObjectWithTag("ThePlayer").transform;
         isNearATower = false;
-        towersOwnWeapon = null;
         distance = 10f;
         buildButton.gameObject.SetActive(false);
     }
@@ -39,13 +48,31 @@ public class TowerBuildManager : MonoBehaviour
             if (!isNearATower)
             {
                 buildButton.onClick.AddListener(onBuiltButtonClick);
-                if (!towersOwnWeapon)
+                if (!hasTower)
                 {
+                    buildButton.gameObject.transform.Find("BuildText").GetComponent<TextMeshProUGUI>().text = "Build for " + price;
                     buildButton.gameObject.transform.Find("Image").GetComponent<Image>().sprite = buildImage;
+                    if (towerToBuild.GetComponent<TowerWeapon>() == null)
+                    {
+                        buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Freeze Tower";
+                    }
+                    else
+                    {
+                        buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Tower";
+                    }
                 }
                 else
                 {
+                    buildButton.gameObject.transform.Find("BuildText").GetComponent<TextMeshProUGUI>().text = "Upgrade for " + price;
                     buildButton.gameObject.transform.Find("Image").GetComponent<Image>().sprite = updateImage;
+                    if (towerToBuild.GetComponent<TowerWeapon>() == null)
+                    {
+                        buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Freeze Tower - Level " + ownTower.GetComponent<FreezeWeapon>().level;
+                    }
+                    else
+                    {
+                        buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Tower - Level " + ownTower.GetComponent<TowerWeapon>().level;
+                    }
                 }
             }
             isNearATower = true;
@@ -59,16 +86,52 @@ public class TowerBuildManager : MonoBehaviour
 
     public void onBuiltButtonClick()
     {
-        if (!towersOwnWeapon && coins.checkIfHasEnough(price))
+        if (!hasTower && coins.checkIfHasEnough(price))
         {
+            hasTower = true;
             coins.removeAmount(price);
-            Debug.Log("Built!");
-            towersOwnWeapon = Instantiate(towerToBuild, transform.position + new Vector3(0, 10f, 0), Quaternion.identity);
+            ownTower = Instantiate(towerToBuild, transform.position + new Vector3(0, 10f, 0), Quaternion.identity);
             buildButton.gameObject.transform.Find("Image").GetComponent<Image>().sprite = updateImage;
+            buildButton.gameObject.transform.Find("BuildText").GetComponent<TextMeshProUGUI>().text = "Upgrade for " + price;
+            if (towerToBuild.GetComponent<TowerWeapon>() == null)
+            {
+                buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Freeze Tower - Level 1";
+            }
+            else
+            {
+                buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Tower - Level 1";
+            }
         }
-        else
+        else if(coins.checkIfHasEnough(price))
         {
-            Debug.Log("Already has a Tower!");
+            if (towerToBuild.GetComponent<TowerWeapon>() == null)
+            {
+                if(ownTower.GetComponent<FreezeWeapon>().level < 5)
+                {
+                    coins.removeAmount(price);
+                    ownTower.GetComponent<FreezeWeapon>().upgradeTower();
+                    buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Freeze Tower - Level " + ownTower.GetComponent<FreezeWeapon>().level;
+                    Debug.Log("Upgraded!");
+                }
+                else
+                {
+                    Debug.Log("Max Level!");
+                }
+            }
+            else
+            {
+                if (ownTower.GetComponent<TowerWeapon>().level < 5)
+                {
+                    coins.removeAmount(price);
+                    ownTower.GetComponent<TowerWeapon>().upgradeTower();
+                    buildButton.gameObject.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = "Tower - Level " + ownTower.GetComponent<TowerWeapon>().level;
+                    Debug.Log("Upgraded!");
+                }
+                else
+                {
+                    Debug.Log("Max Level!");
+                }
+            }
         }
     }
 }

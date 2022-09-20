@@ -114,7 +114,7 @@ MonoBehaviour:
   target: {fileID: 0}
   enemyTag: target
   fr: 10
-  price: 0
+  price: 50
 --- !u!54 &1693244927603436106
 Rigidbody:
   m_ObjectHideFlags: 0
