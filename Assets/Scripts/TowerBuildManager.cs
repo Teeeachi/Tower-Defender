@@ -47,7 +47,7 @@ public class TowerBuildManager : MonoBehaviour
             buildButton.gameObject.SetActive(true);
             if (!isNearATower)
             {
-                buildButton.onClick.AddListener(onBuiltButtonClick);
+                buildButton.onClick.AddListener(transform.gameObject.GetComponent<TowerBuildManager>().onBuiltButtonClick);
                 if (!hasTower)
                 {
                     buildButton.gameObject.transform.Find("BuildText").GetComponent<TextMeshProUGUI>().text = "Build for " + price;
