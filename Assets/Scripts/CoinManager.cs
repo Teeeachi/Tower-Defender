@@ -35,7 +35,7 @@ public class CoinManager : MonoBehaviour
 
     void Start()
     {
-        coinCount = 1000f;
+        coinCount = 250f;
         coinText.text = "Coins: " + coinCount;
     }
 

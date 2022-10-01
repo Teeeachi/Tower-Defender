@@ -12,13 +12,15 @@ public class HealthBarController : MonoBehaviour
     bool didGetHit;
     float currentDealingDamage;
     public Image FillImage;
+    public GameMaster master;
+
     // Start is called before the first frame update
     void Start()
     {
         currentDealingDamage = 0;
         didGetHit = false;
         HealthDamageChangeSpeed = 2f;
-        MaxHealth = 100f;
+        MaxHealth = 150f;
         HealthBarSlider.maxValue = MaxHealth;
         HealthBarSlider.value = MaxHealth;
         currentHealth = HealthBarSlider.value;
@@ -26,9 +28,13 @@ public class HealthBarController : MonoBehaviour
 
     public void gotHit(float damage)
     {
+        Handheld.Vibrate();
         currentDealingDamage += damage;
         currentHealth -= damage;
         didGetHit = true;
+        if (currentHealth <= 0){
+            master.youLost();
+        }
     }
     // Update is called once per frame
     void Update()

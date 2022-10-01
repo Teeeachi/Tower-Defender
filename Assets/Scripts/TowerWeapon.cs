@@ -26,8 +26,8 @@ public class TowerWeapon : MonoBehaviour
         price = 50f;
         towerDidHitEnemy = false;
         enemyTag = "Enemy";
-        hitStrength = 10f;
-        distance = 100f;
+        hitStrength = 20f;
+        distance = 35f;
         InvokeRepeating("UpdateTarget", 0f, 0.5f);
     }
 

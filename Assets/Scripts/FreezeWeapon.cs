@@ -26,8 +26,8 @@ public class FreezeWeapon : MonoBehaviour
         price = 75f;
         towerDidHitEnemy = false;
         enemyTag = "Enemy";
-        hitStrength = 10f;
-        distance = 100f;
+        hitStrength = 15f;
+        distance = 35f;
         InvokeRepeating("UpdateTarget", 0f, 0.5f);
     }
 

@@ -49,52 +49,44 @@ public class Navmesh : MonoBehaviour
     {
         dist1 = Vector3.Distance(target.transform.position, transform.position);
         dist = Vector3.Distance(player.transform.position, transform.position);
-        if ((dist > Rad)&&(dist1>3f))
+        if ((dist > Rad)&&(dist1> 7.5f))
         {
             agent.destination = target.position;
             gameObject.GetComponent<Animator>().SetTrigger("Run");
         }
-        if ((dist < Rad)&&(dist>3f))
+        if ((dist < Rad)&&(dist> 7.5f))
         {
             agent.destination = player.position;
             gameObject.GetComponent<Animator>().SetTrigger("Run");
         }
-        if ((dist > Rad) && (dist1 <= 3f) && didHit == false)
+        if (dist1 <= 7.5f)
         {
-            gameObject.GetComponent<Animator>().SetTrigger("Idle");
-            if (didHit == false)
-            {
-                gameObject.GetComponent<Animator>().SetTrigger("jab");
-                StartCoroutine(AttackTheTower(5f));
-                didHit = true;
-            }
-            //transform.LookAt(target.transform.position);
+            AttackTheTower(10f);
         }
-        if ((dist <= 6f) && didHit == false)
+        if ((dist <= 7.5f) && (didHit == false))
         {
-            gameObject.GetComponent<Animator>().SetTrigger("Idle");
-            if(didHit == false)
-            {
-                gameObject.GetComponent<Animator>().SetTrigger("jab");
-                StartCoroutine(AttackThePlayer(5f));
-                didHit = true;
-            }
-            //transform.LookAt(player.transform.position);         
+            StartCoroutine(AttackThePlayer(5f));
+            didHit = true;       
         }
     }
 
-    private IEnumerator AttackTheTower(float damage)
+    void AttackTheTower(float damage)
     {
         TowerHealthBarSlider.gotHit(damage);
-        yield return new WaitForSeconds(3f);
         didHit = false;
+        Destroy(gameObject);
+        coins.addAmount(coinAmount);
+        Handheld.Vibrate();
     }
 
     private IEnumerator AttackThePlayer(float damage)
     {
+        gameObject.GetComponent<Animator>().SetTrigger("Idle");
+        gameObject.GetComponent<Animator>().SetTrigger("jab");
+        yield return new WaitForSeconds(2f);
         PlayerHealthBarSlider.gotHit(damage);
         thePlayer.GotHitByAnEnemy();
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         didHit = false;
     }
 

@@ -37,14 +37,10 @@ public class PlayerController : MonoBehaviour
 
     public void GotHitByAnEnemy()
     {
+        RedScreenImage.gameObject.SetActive(true);
         Color RedC = RedScreenImage.color;
         RedC.a = 0.8f;
         RedScreenImage.color = RedC;
-    }
-
-    public void onCameraButtonClick()
-    {
-        StartCoroutine("FadeOutCR");
     }
 
     private IEnumerator FadeOutCR()
@@ -68,11 +64,13 @@ public class PlayerController : MonoBehaviour
             currentTime += Time.deltaTime;
             yield return null;
         }
+        NightTxt.gameObject.SetActive(false);
         yield break;
     }
 
     void Start()
     {
+        StartCoroutine("FadeOutCR");
         hitStrength = 20f;
         distance = 10f;
         playerDidHitEnemy = false;
@@ -90,12 +88,25 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(Input.touchCount == 1)
+        {
+            Touch screenTouch = Input.GetTouch(0);
+            if(screenTouch.phase == TouchPhase.Moved)
+            {
+                transform.Rotate(0f, screenTouch.deltaPosition.x, 0f);
+            }
+        }
+
         Move();
         if (RedScreenImage.color.a > 0)
         {
             Color c = RedScreenImage.color;
             c.a -= Time.deltaTime;
             RedScreenImage.color = c;
+        }
+        else
+        {
+            RedScreenImage.gameObject.SetActive(false);
         }
         GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
         float shortestDistance = Mathf.Infinity;
@@ -122,8 +133,12 @@ public class PlayerController : MonoBehaviour
     {
         DoTheAttack();
         playerDidHitEnemy = true;
-        hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
+        if (hitEnemy != null)
+        {
+            hitEnemy.GetComponent<Navmesh>().GotHit(hitStrength);
+        }
+        yield return new WaitForSeconds(1.5f);
         playerDidHitEnemy = false;
         //Navmesh NavMeshScript = hitEnemy.GetComponent<Navmesh>();
         //NavMeshScript.GotHit();
@@ -145,13 +160,14 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetFloat("Speed", 0.5f, 0.2f, Time.deltaTime);
             }
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(movement), Time.deltaTime * rotationSpeed);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(movement), Time.deltaTime * rotationSpeed);
         }
         else
         {
             animator.SetFloat("Speed", 0, 0.2f, Time.deltaTime);
         }
-        transform.position += movement;
+        //transform.position += movement;
+        transform.position += transform.forward * (joystick.Horizontal+joystick.Vertical) / 2;
         //Camera.main.transform.position = new Vector3(cameraXTilt * RB.position.x, RB.position.y + 12f, RB.position.z - 6f);
     }
 
